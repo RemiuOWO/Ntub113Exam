@@ -44,6 +44,17 @@ class StoreAdapter(
         holder.ratingBar.setOnRatingBarChangeListener { _, rating, fromUser ->
             if (fromUser) onRatingChanged(store, rating)
         }
+        // 電話號碼點擊事件：複製並撥號
+        holder.txtPhone.setOnClickListener {
+            val context = holder.txtPhone.context
+            val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            val clip = android.content.ClipData.newPlainText("phone", store.phone)
+            clipboard.setPrimaryClip(clip)
+            val intent = android.content.Intent(android.content.Intent.ACTION_DIAL)
+            intent.data = android.net.Uri.parse("tel:${store.phone}")
+            context.startActivity(intent)
+            android.widget.Toast.makeText(context, "電話已複製並準備撥號", android.widget.Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun getItemCount() = stores.size
@@ -53,4 +64,3 @@ class StoreAdapter(
         notifyDataSetChanged()
     }
 }
-
